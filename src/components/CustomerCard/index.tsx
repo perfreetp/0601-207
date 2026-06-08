@@ -13,7 +13,6 @@ interface CustomerCardProps {
 const CustomerCard: React.FC<CustomerCardProps> = ({ customer, onClick }) => {
   const handleClick = () => {
     onClick?.()
-    Taro.showToast({ title: `查看 ${customer.name}`, icon: 'none' })
     console.log('[CustomerCard] Click customer:', customer.id)
   }
 

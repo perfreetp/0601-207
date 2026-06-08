@@ -95,7 +95,13 @@ const CustomerPage: React.FC = () => {
 
       <View className={styles.customerList}>
         {filteredCustomers.length > 0 ? (
-          filteredCustomers.map(c => <CustomerCard key={c.id} customer={c} />)
+          filteredCustomers.map(c => (
+            <CustomerCard
+              key={c.id}
+              customer={c}
+              onClick={() => Taro.navigateTo({ url: `/pages/customer-detail/index?id=${c.id}` })}
+            />
+          ))
         ) : (
           <View className={styles.emptyState}>
             <Text className={styles.emptyIcon}>📋</Text>

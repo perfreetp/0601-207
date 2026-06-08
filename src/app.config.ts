@@ -8,7 +8,9 @@ export default defineAppConfig({
     'pages/product/index',
     'pages/favorite/index',
     'pages/customer-form/index',
-    'pages/product-form/index'
+    'pages/product-form/index',
+    'pages/customer-detail/index',
+    'pages/recommend/index'
   ],
   window: {
     backgroundTextStyle: 'light',

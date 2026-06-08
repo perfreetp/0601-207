@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { Product } from '@/types/product'
 import { mockProducts } from '@/data/product'
+import { saveToStorage, loadFromStorage } from '@/utils/persist'
 
 interface ProductState {
   products: Product[]
@@ -15,34 +16,44 @@ const calcStockStatus = (stock: number): Product['stockStatus'] => {
   return 'sufficient'
 }
 
-export const useProductStore = create<ProductState>((set, get) => ({
-  products: [...mockProducts],
+export const useProductStore = create<ProductState>((set, get) => {
+  const persisted = loadFromStorage<Product[]>('products', mockProducts)
+  console.log('[ProductStore] Loaded products from storage:', persisted.length)
 
-  addProduct: (data) => {
-    const stock = data.stock ?? 0
-    const newProduct: Product = {
-      ...data,
-      id: Date.now().toString(),
-      stockStatus: calcStockStatus(stock)
-    }
-    console.log('[ProductStore] Add new product:', newProduct)
-    set({ products: [newProduct, ...get().products] })
-  },
+  const persist = () => saveToStorage('products', get().products)
 
-  updateProduct: (id, data) => {
-    console.log('[ProductStore] Update product:', id, data)
-    set({
-      products: get().products.map(p => {
-        if (p.id !== id) return p
-        const merged = { ...p, ...data }
-        const stock = data.stock !== undefined ? data.stock : p.stock
-        return { ...merged, stockStatus: calcStockStatus(stock) }
+  return {
+    products: persisted,
+
+    addProduct: (data) => {
+      const stock = data.stock ?? 0
+      const newProduct: Product = {
+        ...data,
+        id: Date.now().toString(),
+        stockStatus: calcStockStatus(stock)
+      }
+      console.log('[ProductStore] Add new product:', newProduct)
+      set({ products: [newProduct, ...get().products] })
+      persist()
+    },
+
+    updateProduct: (id, data) => {
+      console.log('[ProductStore] Update product:', id, data)
+      set({
+        products: get().products.map(p => {
+          if (p.id !== id) return p
+          const merged = { ...p, ...data }
+          const stock = data.stock !== undefined ? data.stock : p.stock
+          return { ...merged, stockStatus: calcStockStatus(stock) }
+        })
       })
-    })
-  },
+      persist()
+    },
 
-  deleteProduct: (id) => {
-    console.log('[ProductStore] Delete product:', id)
-    set({ products: get().products.filter(p => p.id !== id) })
+    deleteProduct: (id) => {
+      console.log('[ProductStore] Delete product:', id)
+      set({ products: get().products.filter(p => p.id !== id) })
+      persist()
+    }
   }
-}))
+})

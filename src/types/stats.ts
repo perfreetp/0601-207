@@ -8,6 +8,7 @@ export interface UsageStats {
 export interface ConversionRecord {
   id: string
   customerName: string
+  customerId: string
   product: string
   amount: number
   date: string
@@ -25,4 +26,19 @@ export interface RankRecord {
 export interface DailyUsage {
   date: string
   count: number
+}
+
+export interface DailyStats {
+  date: string
+  scriptsGenerated: number
+  favoritesAdded: number
+  customersFollowed: number
+  tasksCompleted: number
+}
+
+export interface StageConversion {
+  stage: string
+  count: number
+  converted: number
+  rate: number
 }

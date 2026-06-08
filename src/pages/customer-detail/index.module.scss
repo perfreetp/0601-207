@@ -1,0 +1,276 @@
+@import '@/styles/theme.scss';
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-bottom: 180rpx;
+}
+
+.hero {
+  padding: 40rpx 32rpx;
+  background: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);
+  color: #fff;
+  position: relative;
+}
+
+.avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  margin-bottom: 16rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.name {
+  font-size: 40rpx;
+  font-weight: $font-weight-bold;
+  margin-bottom: 8rpx;
+}
+
+.phone {
+  font-size: $font-size-sm;
+  opacity: 0.9;
+  margin-bottom: 20rpx;
+}
+
+.stageRow {
+  display: flex;
+  gap: 12rpx;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.section {
+  margin: 24rpx 32rpx;
+  background: #fff;
+  border-radius: $radius-lg;
+  padding: 28rpx;
+  box-shadow: $shadow-sm;
+}
+
+.sectionTitle {
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  margin-bottom: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.editLink {
+  font-size: $font-size-sm;
+  color: $color-primary;
+  font-weight: $font-weight-normal;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+  margin-bottom: 16rpx;
+}
+
+.infoItem {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.infoLabel {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.infoValue {
+  font-size: $font-size-base;
+  color: $color-text-primary;
+  font-weight: $font-weight-semibold;
+}
+
+.tagList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.stagePicker {
+  display: flex;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.stageChip {
+  padding: 10rpx 24rpx;
+  border-radius: 100rpx;
+  font-size: $font-size-sm;
+  background: $color-bg-page;
+  color: $color-text-secondary;
+  border: 2rpx solid transparent;
+}
+
+.stageChipActive {
+  background: rgba(37, 99, 235, 0.1);
+  color: $color-primary;
+  border-color: $color-primary;
+  font-weight: $font-weight-semibold;
+}
+
+.noteTextarea {
+  width: 100%;
+  min-height: 140rpx;
+  padding: 20rpx;
+  border-radius: $radius-md;
+  background: $color-bg-page;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  border: none;
+  outline: none;
+}
+
+.dateRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+}
+
+.dateLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.dateValue {
+  font-size: $font-size-sm;
+  color: $color-primary;
+  font-weight: $font-weight-semibold;
+}
+
+.commList {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.commItem {
+  padding: 20rpx;
+  background: $color-bg-page;
+  border-radius: $radius-md;
+  border-left: 6rpx solid $color-primary;
+}
+
+.commHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10rpx;
+}
+
+.commType {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-primary;
+}
+
+.commDate {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.commContent {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  line-height: 1.6;
+}
+
+.commResult {
+  font-size: $font-size-xs;
+  color: $color-success;
+  margin-top: 8rpx;
+}
+
+.taskMiniItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.04);
+}
+
+.taskMiniTitle {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  flex: 1;
+  margin-right: 16rpx;
+}
+
+.taskMiniTime {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  white-space: nowrap;
+}
+
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24rpx 32rpx calc(24rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.06);
+  display: flex;
+  gap: 16rpx;
+}
+
+.btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+}
+
+.btnPrimary {
+  background: $gradient-primary;
+  color: #fff;
+}
+
+.btnSecondary {
+  background: $color-bg-page;
+  color: $color-text-primary;
+}
+
+.btnOutline {
+  border: 2rpx solid $color-primary;
+  color: $color-primary;
+  background: #fff;
+}
+
+.empty {
+  padding: 60rpx 0;
+  text-align: center;
+  color: $color-text-tertiary;
+  font-size: $font-size-sm;
+}
+
+.inputField {
+  width: 100%;
+  padding: 16rpx 20rpx;
+  border-radius: $radius-md;
+  background: $color-bg-page;
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+}
+
+.btnTiny {
+  padding: 8rpx 20rpx;
+  border-radius: $radius-sm;
+  background: rgba(37, 99, 235, 0.1);
+  color: $color-primary;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+}

@@ -1,0 +1,326 @@
+@import '@/styles/theme.scss';
+
+.page {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-bottom: 180rpx;
+}
+
+.hero {
+  padding: 36rpx 32rpx 48rpx;
+  background: linear-gradient(135deg, $color-primary 0%, $color-secondary 100%);
+  color: #fff;
+}
+
+.heroTitle {
+  font-size: 36rpx;
+  font-weight: $font-weight-bold;
+  margin-bottom: 8rpx;
+}
+
+.heroSub {
+  font-size: $font-size-sm;
+  opacity: 0.9;
+}
+
+.section {
+  margin: 24rpx 32rpx;
+  background: #fff;
+  border-radius: $radius-lg;
+  padding: 28rpx;
+  box-shadow: $shadow-sm;
+}
+
+.sectionTitle {
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+  margin-bottom: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sectionCount {
+  font-size: $font-size-sm;
+  color: $color-primary;
+  font-weight: $font-weight-semibold;
+}
+
+.productPickerList {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  max-height: 600rpx;
+  overflow-y: auto;
+}
+
+.pickerItem {
+  display: flex;
+  align-items: center;
+  gap: 20rpx;
+  padding: 20rpx;
+  border-radius: $radius-md;
+  background: $color-bg-page;
+  border: 2rpx solid transparent;
+  transition: all $transition-base;
+}
+
+.pickerItemSelected {
+  border-color: $color-primary;
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.checkbox {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: 50%;
+  border: 2rpx solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 24rpx;
+  color: #fff;
+  background: #fff;
+}
+
+.checkboxChecked {
+  background: $color-primary;
+  border-color: $color-primary;
+}
+
+.thumb {
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: $radius-md;
+  background: $color-bg-page;
+  flex-shrink: 0;
+}
+
+.pInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.pName {
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  margin-bottom: 6rpx;
+}
+
+.pMeta {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
+.pPrice {
+  font-size: $font-size-sm;
+  color: #ef4444;
+  font-weight: $font-weight-bold;
+}
+
+.pStock {
+  font-size: $font-size-xs;
+}
+
+.resultCard {
+  padding: 24rpx;
+  border-radius: $radius-md;
+  background: $color-bg-page;
+  margin-bottom: 20rpx;
+  border-left: 6rpx solid $color-primary;
+}
+
+.resultCardOut {
+  border-left-color: #94a3b8;
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.rHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.rName {
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+  color: $color-text-primary;
+}
+
+.rPrice {
+  font-size: 32rpx;
+  color: #ef4444;
+  font-weight: $font-weight-bold;
+}
+
+.rStockBadge {
+  font-size: $font-size-xs;
+  padding: 4rpx 14rpx;
+  border-radius: 100rpx;
+  margin-bottom: 10rpx;
+  display: inline-block;
+}
+
+.rStockOk {
+  background: rgba(16, 185, 129, 0.15);
+  color: $color-success;
+}
+
+.rStockLow {
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+}
+
+.rStockOut {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+}
+
+.rSelling {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  margin-bottom: 8rpx;
+  line-height: 1.6;
+}
+
+.rMatch {
+  font-size: $font-size-xs;
+  color: $color-primary;
+  padding: 8rpx 16rpx;
+  background: rgba(37, 99, 235, 0.08);
+  border-radius: $radius-sm;
+  display: inline-block;
+  margin-top: 8rpx;
+  line-height: 1.5;
+}
+
+.rPreorderTip {
+  margin-top: 14rpx;
+  padding: 16rpx;
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: $radius-sm;
+  font-size: $font-size-sm;
+  color: #b45309;
+  line-height: 1.6;
+}
+
+.summaryBox {
+  padding: 24rpx;
+  border-radius: $radius-lg;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%);
+}
+
+.summaryRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10rpx 0;
+}
+
+.summaryLabel {
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+}
+
+.summaryValue {
+  font-size: $font-size-sm;
+  color: $color-text-primary;
+  font-weight: $font-weight-semibold;
+}
+
+.summaryTotal {
+  margin-top: 12rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx dashed rgba(0, 0, 0, 0.1);
+}
+
+.totalPrice {
+  font-size: 44rpx;
+  color: #ef4444;
+  font-weight: $font-weight-bold;
+}
+
+.budgetHint {
+  margin-top: 14rpx;
+  padding: 14rpx 18rpx;
+  border-radius: $radius-sm;
+  font-size: $font-size-sm;
+  line-height: 1.6;
+}
+
+.budgetOk {
+  background: rgba(16, 185, 129, 0.1);
+  color: $color-success;
+}
+
+.budgetOver {
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.budgetNear {
+  background: rgba(245, 158, 11, 0.1);
+  color: #b45309;
+}
+
+.bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24rpx 32rpx calc(24rpx + env(safe-area-inset-bottom));
+  background: #fff;
+  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.06);
+  display: flex;
+  gap: 16rpx;
+}
+
+.btn {
+  flex: 1;
+  height: 88rpx;
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+}
+
+.btnPrimary {
+  background: $gradient-primary;
+  color: #fff;
+}
+
+.btnOutline {
+  border: 2rpx solid $color-primary;
+  color: $color-primary;
+  background: #fff;
+}
+
+.btnDisabled {
+  background: #cbd5e1;
+  color: #fff;
+}
+
+.empty {
+  padding: 60rpx 0;
+  text-align: center;
+  color: $color-text-tertiary;
+  font-size: $font-size-sm;
+}
+
+.alternateBox {
+  margin-top: 12rpx;
+  padding: 16rpx 18rpx;
+  background: rgba(139, 92, 246, 0.1);
+  border-radius: $radius-sm;
+  font-size: $font-size-xs;
+  color: #6d28d9;
+  line-height: 1.7;
+}

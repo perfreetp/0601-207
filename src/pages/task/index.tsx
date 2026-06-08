@@ -4,7 +4,8 @@ import Taro from '@tarojs/taro'
 import classnames from 'classnames'
 import PageHeader from '@/components/PageHeader'
 import TaskCard from '@/components/TaskCard'
-import { mockTasks } from '@/data/task'
+import { useTaskStore } from '@/store/task'
+import { useCustomerStore } from '@/store/customer'
 import { typeLabelMap, type TaskType, type TaskStatus } from '@/types/task'
 import styles from './index.module.scss'
 
@@ -20,7 +21,9 @@ const typeFilters: (TaskType | 'all')[] = ['all', 'followup', 'deal', 'material'
 const TaskPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<FilterStatus>('all')
   const [typeFilter, setTypeFilter] = useState<TaskType | 'all'>('all')
-  const [tasks, setTasks] = useState(mockTasks)
+  const tasks = useTaskStore(s => s.tasks)
+  const completeTask = useTaskStore(s => s.completeTask)
+  const customers = useCustomerStore(s => s.customers)
 
   const summary = useMemo(() => ({
     pending: tasks.filter(t => t.status === 'pending').length,
@@ -37,19 +40,34 @@ const TaskPage: React.FC = () => {
   }, [tasks, statusFilter, typeFilter])
 
   const handleStatusChange = (id: string) => {
-    setTasks(prev => prev.map(t => t.id === id ? { ...t, status: 'done' as const } : t))
-    console.log('[TaskPage] Task completed:', id)
+    const task = tasks.find(t => t.id === id)
+    if (!task) return
+    Taro.showModal({
+      title: '确认完成任务',
+      content: `完成「${task.title}」后将记录到客户沟通历史`,
+      success: (res) => {
+        if (res.confirm) {
+          completeTask(id, '任务已完成')
+          Taro.showToast({ title: '已完成', icon: 'success' })
+        }
+      }
+    })
+  }
+
+  const gotoCustomer = (customerId: string) => {
+    if (!customerId) return
+    Taro.navigateTo({ url: `/pages/customer-detail/index?id=${customerId}` })
   }
 
   React.useEffect(() => {
-    console.log('[TaskPage] Loaded, total tasks:', tasks.length)
-  }, [])
+    console.log('[TaskPage] Loaded, total tasks:', tasks.length, ', customers:', customers.length)
+  }, [tasks.length, customers.length])
 
   return (
     <View className={styles.pageContainer}>
       <PageHeader
         title="任务中心"
-        subtitle="跟进客户，高效管理"
+        subtitle={`待办 ${summary.pending} · 已完成 ${summary.done}`}
         gradient
       />
 
@@ -95,7 +113,9 @@ const TaskPage: React.FC = () => {
       <View className={styles.taskList}>
         {filteredTasks.length > 0 ? (
           filteredTasks.map(t => (
-            <TaskCard key={t.id} task={t} onStatusChange={handleStatusChange} />
+            <View key={t.id} onClick={() => gotoCustomer(t.customerId)}>
+              <TaskCard task={t} onStatusChange={handleStatusChange} />
+            </View>
           ))
         ) : (
           <View className={styles.emptyState}>
