@@ -1,9 +1,10 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { View, Text, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import classnames from 'classnames'
 import ScriptCard from '@/components/ScriptCard'
-import { mockFavorites } from '@/data/favorite'
+import { useFavoriteStore } from '@/store/favorite'
+import { useScriptStore } from '@/store/script'
 import { sceneLabelMap, type ScriptScene } from '@/types/script'
 import styles from './index.module.scss'
 
@@ -17,26 +18,27 @@ const filters: { key: ScriptScene | 'all'; label: string }[] = [
 
 const FavoritePage: React.FC = () => {
   const [activeFilter, setActiveFilter] = useState<ScriptScene | 'all'>('all')
-  const [favorites, setFavorites] = useState(mockFavorites)
+  const { favorites, refreshFromScripts } = useFavoriteStore()
+  const toggleFavorite = useScriptStore(s => s.toggleFavorite)
 
   const filteredFavorites = useMemo(() => {
     return favorites.filter(s => activeFilter === 'all' || s.scene === activeFilter)
   }, [favorites, activeFilter])
 
   const handleFavorite = (id: string, isFav: boolean) => {
-    console.log('[FavoritePage] Favorite changed:', id, isFav)
-    if (!isFav) {
-      setFavorites(prev => prev.filter(f => f.id !== id))
-    }
+    console.log('[FavoritePage] Remove from favorites:', id)
+    toggleFavorite(id)
+    refreshFromScripts()
   }
 
   const handleExplore = () => {
     Taro.switchTab({ url: '/pages/script/index' })
   }
 
-  React.useEffect(() => {
-    console.log('[FavoritePage] Loaded, favorites:', favorites.length)
-  }, [favorites])
+  useEffect(() => {
+    console.log('[FavoritePage] Refresh from scripts on mount')
+    refreshFromScripts()
+  }, [])
 
   return (
     <View className={styles.pageContainer}>

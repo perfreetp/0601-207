@@ -6,7 +6,9 @@ export default defineAppConfig({
     'pages/task/index',
     'pages/stats/index',
     'pages/product/index',
-    'pages/favorite/index'
+    'pages/favorite/index',
+    'pages/customer-form/index',
+    'pages/product-form/index'
   ],
   window: {
     backgroundTextStyle: 'light',

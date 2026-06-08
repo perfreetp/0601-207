@@ -234,6 +234,66 @@
   color: $color-text-white;
 }
 
+.footerBtnDisabled {
+  background: $color-border;
+  color: $color-text-tertiary;
+
+  &:active {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+.editBtn {
+  position: absolute;
+  top: $spacing-md;
+  right: $spacing-md;
+  width: 56rpx;
+  height: 56rpx;
+  border-radius: $radius-round;
+  background: rgba(148, 163, 184, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  z-index: 10;
+
+  &:active {
+    background: rgba(148, 163, 184, 0.4);
+  }
+}
+
+.productCard {
+  position: relative;
+}
+
+.addBtn {
+  position: fixed;
+  right: $page-padding;
+  bottom: calc(env(safe-area-inset-bottom) + 48rpx);
+  width: 112rpx;
+  height: 112rpx;
+  border-radius: $radius-round;
+  background: $gradient-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 24rpx rgba(37, 99, 235, 0.4);
+  z-index: 100;
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.addBtnText {
+  font-size: 56rpx;
+  color: $color-text-white;
+  font-weight: $font-weight-light;
+  line-height: 1;
+}
+
 .emptyState {
   padding: 160rpx $page-padding;
   display: flex;

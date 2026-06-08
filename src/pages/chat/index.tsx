@@ -3,6 +3,7 @@ import { View, Text, Input, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import classnames from 'classnames'
 import PageHeader from '@/components/PageHeader'
+import Tag from '@/components/Tag'
 import { toneLabelMap, type ScriptTone } from '@/types/script'
 import styles from './index.module.scss'
 
@@ -11,9 +12,40 @@ interface ChatMessage {
   role: 'user' | 'ai'
   content: string
   highlights?: number[][]
+  tone?: ScriptTone
+  marked?: boolean
+  isVersion?: boolean
+  versionOf?: string
 }
 
 const tones: ScriptTone[] = ['professional', 'friendly', 'warm', 'concise']
+
+const replyTemplates: Record<ScriptTone, Record<string, { content: string; highlights: number[][] }>> = {
+  professional: {
+    default: {
+      content: '非常专业的分析！根据客户的需求，我建议从以下几点切入：1. 强调产品核心优势 2. 用数据和案例支撑 3. 主动询问客户深层需求。请问您需要进一步细化哪部分？',
+      highlights: [[14, 18], [26, 32]]
+    }
+  },
+  friendly: {
+    default: {
+      content: '太好了！我建议您可以这样回复客户：先表示理解和认同，然后自然地引出我们产品的优势，最后以轻松的方式引导下一步沟通。需要我帮您组织更具体的语言吗？',
+      highlights: [[6, 10], [28, 36]]
+    }
+  },
+  warm: {
+    default: {
+      content: '非常理解客户的感受~ 可以先站在客户的角度表示关切，让客户感受到您的真诚，然后再介绍我们的解决方案。您看需要我生成更亲切、更拉近距离的版本吗？',
+      highlights: [[0, 4], [40, 48]]
+    }
+  },
+  concise: {
+    default: {
+      content: '核心回复三要点：1. 认同客户感受 2. 突出产品价值 3. 引导下一步行动。简洁高效，直接说重点！',
+      highlights: [[0, 8], [32, 36]]
+    }
+  }
+}
 
 const ChatPage: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -21,11 +53,13 @@ const ChatPage: React.FC = () => {
       id: '1',
       role: 'ai',
       content: '您好！我是AI销售助手。您可以直接输入客户说的话，我会帮您生成专业的回复话术。支持语音输入、快速改写和语气切换哦~',
-      highlights: [[20, 24], [41, 45]]
+      highlights: [[20, 24], [41, 45]],
+      tone: 'friendly'
     }
   ])
   const [input, setInput] = useState('')
   const [tone, setTone] = useState<ScriptTone>('friendly')
+  const [rewritingId, setRewritingId] = useState<string | null>(null)
   const scrollRef = useRef<any>(null)
 
   const scrollToBottom = () => {
@@ -37,6 +71,33 @@ const ChatPage: React.FC = () => {
   useEffect(() => {
     scrollToBottom()
   }, [messages])
+
+  const generateReply = (_text: string, t: ScriptTone, variant: number = 0): { content: string; highlights: number[][] } => {
+    const base = replyTemplates[t].default
+    if (variant === 0) return base
+    const variants: Record<ScriptTone, string[]> = {
+      professional: [
+        '换个专业角度来看：建议采用FABE法则——Feature特点、Advantage优势、Benefit利益、Evidence证据，层层递进说服客户。',
+        '专业版话术：您的顾虑我非常理解，根据行业数据报告，我们的产品在同类中返修率最低，且拥有30000+真实用户好评，品质值得信赖。'
+      ],
+      friendly: [
+        '换个更轻松的方式：您看这样说会不会更好？"哎呀我懂您的感受！其实好多客户一开始也这么想，后来用了都说真香呢~"',
+        '亲切版：哈哈这个问题问得好！其实我当初选的时候也纠结过，后来对比了好多家，发现这款确实是性价比最高的~'
+      ],
+      warm: [
+        '更亲切的说法：我特别能体会您的心情，换作是我也会特别在意这些细节。您放心，我们的服务都是老客户公认的好~',
+        '暖心版：姐/哥您放心，我跟您说句实在的，这个问题我们碰到过很多次了，我们的售后团队都是24小时在线的，随叫随到！'
+      ],
+      concise: [
+        '简洁版三句话：1.理解 2.优势 3.邀约。就这么简单，别啰嗦！',
+        '精华版：您说的对。我们的更好。今天定吗？'
+      ]
+    }
+    return {
+      content: variants[t][(variant - 1) % variants[t].length],
+      highlights: [[6, 12], [24, 30]]
+    }
+  }
 
   const handleSend = () => {
     if (!input.trim()) return
@@ -50,26 +111,17 @@ const ChatPage: React.FC = () => {
     setInput('')
 
     setTimeout(() => {
+      const reply = generateReply(input, tone)
       const aiMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'ai',
-        content: generateReply(input, tone),
-        highlights: [[5, 12], [28, 34]]
+        content: reply.content,
+        highlights: reply.highlights,
+        tone
       }
       setMessages(prev => [...prev, aiMsg])
-      Taro.showToast({ title: 'AI已生成回复', icon: 'success' })
+      Taro.showToast({ title: `已生成${toneLabelMap[tone]}语气回复`, icon: 'success' })
     }, 800)
-  }
-
-  const generateReply = (text: string, t: ScriptTone): string => {
-    const toneText = toneLabelMap[t]
-    const templates = {
-      professional: `非常专业的分析！根据您提到的"${text.slice(0, 20)}"，建议从以下几点切入：1. 强调产品核心优势 2. 用数据和案例支撑 3. 主动询问客户深层需求。请问您需要我进一步细化哪部分？`,
-      friendly: `太好了！针对客户说的"${text.slice(0, 20)}"，我建议您可以这样回复：先表示理解和认同，然后自然地引出我们产品的优势，最后以轻松的方式引导下一步沟通。需要我帮您组织具体语言吗？`,
-      warm: `非常理解~客户提到"${text.slice(0, 20)}"，可以先站在客户的角度表示关切，让客户感受到您的真诚，然后再介绍我们的解决方案。您看需要我生成更亲切的版本吗？`,
-      concise: `针对"${text.slice(0, 15)}"，核心回复三要点：1. 认同客户 2. 突出价值 3. 引导行动。需要简洁版完整话术吗？`
-    }
-    return templates[t] || templates.friendly
   }
 
   const handleVoice = () => {
@@ -80,9 +132,66 @@ const ChatPage: React.FC = () => {
     }, 1500)
   }
 
+  const handleRewrite = (msg: ChatMessage) => {
+    console.log('[ChatPage] Rewrite message:', msg.id, 'current tone:', tone)
+    setRewritingId(msg.id)
+    Taro.showToast({ title: `正在生成${toneLabelMap[tone]}新版本...`, icon: 'none' })
+
+    setTimeout(() => {
+      const versionCount = messages.filter(m => m.versionOf === msg.id).length
+      const reply = generateReply(msg.content, tone, versionCount + 1)
+      const newVersion: ChatMessage = {
+        id: `${msg.id}-v${versionCount + 1}-${Date.now()}`,
+        role: 'ai',
+        content: reply.content,
+        highlights: reply.highlights,
+        tone,
+        isVersion: true,
+        versionOf: msg.id
+      }
+      setMessages(prev => {
+        const idx = prev.findIndex(m => m.id === msg.id)
+        const insertIdx = idx + 1 + versionCount
+        const newMessages = [...prev]
+        newMessages.splice(insertIdx, 0, newVersion)
+        return newMessages
+      })
+      setRewritingId(null)
+      Taro.showToast({ title: `${toneLabelMap[tone]}版本已生成`, icon: 'success' })
+    }, 700)
+  }
+
+  const handleMark = (msg: ChatMessage) => {
+    console.log('[ChatPage] Toggle mark on message:', msg.id)
+    setMessages(prev => prev.map(m => {
+      if (m.id !== msg.id) return m
+      const newMarked = !m.marked
+      Taro.showToast({ title: newMarked ? '已标记重点' : '已取消标记', icon: 'success' })
+      if (newMarked) {
+        return {
+          ...m,
+          marked: true,
+          highlights: [[0, Math.min(10, m.content.length)], [Math.floor(m.content.length / 2), Math.floor(m.content.length / 2) + 12]]
+        }
+      }
+      return { ...m, marked: false, highlights: m.highlights?.slice(0, 0) }
+    }))
+  }
+
   const handleQuick = (action: string) => {
     console.log('[ChatPage] Quick action:', action)
-    Taro.showToast({ title: `${action}功能演示中`, icon: 'none' })
+    if (action === '改写') {
+      const lastAiMsg = [...messages].reverse().find(m => m.role === 'ai' && !m.isVersion)
+      if (lastAiMsg) {
+        handleRewrite(lastAiMsg)
+      } else {
+        Taro.showToast({ title: '暂无可改写的回复', icon: 'none' })
+      }
+    } else if (action === '扩写') {
+      Taro.showToast({ title: '扩写功能：内容更详细', icon: 'none' })
+    } else if (action === '翻译') {
+      Taro.showToast({ title: '翻译功能：中英互译', icon: 'none' })
+    }
   }
 
   const handleMsgAction = (action: string, msg: ChatMessage) => {
@@ -90,9 +199,9 @@ const ChatPage: React.FC = () => {
     if (action === 'copy') {
       Taro.setClipboardData({ data: msg.content, success: () => Taro.showToast({ title: '已复制', icon: 'success' }) })
     } else if (action === 'mark') {
-      Taro.showToast({ title: '已标记重点', icon: 'success' })
+      handleMark(msg)
     } else if (action === 'rewrite') {
-      Taro.showToast({ title: '正在重新生成...', icon: 'none' })
+      handleRewrite(msg)
     }
   }
 
@@ -103,15 +212,19 @@ const ChatPage: React.FC = () => {
     const parts: React.ReactNode[] = []
     let lastIndex = 0
     msg.highlights.forEach(([start, end], i) => {
-      if (start > lastIndex) {
-        parts.push(<Text key={`t-${i}`}>{msg.content.slice(lastIndex, start)}</Text>)
+      const s = Math.max(0, Math.min(start, msg.content.length))
+      const e = Math.max(s, Math.min(end, msg.content.length))
+      if (s > lastIndex) {
+        parts.push(<Text key={`t-${i}`}>{msg.content.slice(lastIndex, s)}</Text>)
       }
-      parts.push(
-        <Text key={`h-${i}`} className={styles.msgHighlight}>
-          {msg.content.slice(start, end)}
-        </Text>
-      )
-      lastIndex = end
+      if (e > s) {
+        parts.push(
+          <Text key={`h-${i}`} className={styles.msgHighlight}>
+            {msg.content.slice(s, e)}
+          </Text>
+        )
+      }
+      lastIndex = e
     })
     if (lastIndex < msg.content.length) {
       parts.push(<Text key="t-end">{msg.content.slice(lastIndex)}</Text>)
@@ -127,18 +240,51 @@ const ChatPage: React.FC = () => {
         {messages.map(msg => (
           <View
             key={msg.id}
-            className={classnames(styles.msgItem, msg.role === 'user' && styles.msgItemUser)}
+            className={classnames(
+              styles.msgItem,
+              msg.role === 'user' && styles.msgItemUser,
+              msg.isVersion && styles.msgItemVersion
+            )}
           >
-            <View className={styles.msgAvatar}>
-              <Text>{msg.role === 'ai' ? 'AI' : '我'}</Text>
+            <View className={classnames(styles.msgAvatar, msg.isVersion && styles.msgAvatarVersion)}>
+              <Text>{msg.role === 'ai' ? (msg.isVersion ? 'V' : 'AI') : '我'}</Text>
             </View>
-            <View className={styles.msgBubble}>
+            <View className={classnames(styles.msgBubble, msg.marked && styles.msgBubbleMarked)}>
+              {msg.isVersion && (
+                <View style={{ marginBottom: '12rpx', display: 'flex', gap: '8rpx', flexWrap: 'wrap' }}>
+                  <Tag text={`${toneLabelMap[msg.tone || tone]}语气`} color="#7c3aed" bgColor="rgba(124, 58, 237, 0.1)" size="sm" />
+                  <Tag text="改写版本" color="#2563eb" bgColor="rgba(37, 99, 235, 0.1)" size="sm" />
+                </View>
+              )}
+              {!msg.isVersion && msg.tone && (
+                <View style={{ marginBottom: '12rpx' }}>
+                  <Tag text={`${toneLabelMap[msg.tone]}语气`} color="#2563eb" bgColor="rgba(37, 99, 235, 0.1)" size="sm" />
+                  {msg.marked && (
+                    <Tag text="⭐ 重点" color="#f59e0b" bgColor="rgba(245, 158, 11, 0.1)" size="sm" />
+                  )}
+                </View>
+              )}
+              {msg.marked && !msg.tone && (
+                <View style={{ marginBottom: '12rpx' }}>
+                  <Tag text="⭐ 已标记重点" color="#f59e0b" bgColor="rgba(245, 158, 11, 0.1)" size="sm" />
+                </View>
+              )}
               {renderContent(msg)}
               {msg.role === 'ai' && (
                 <View className={styles.msgActions}>
                   <Text className={styles.msgActionBtn} onClick={() => handleMsgAction('copy', msg)}>复制</Text>
-                  <Text className={styles.msgActionBtn} onClick={() => handleMsgAction('rewrite', msg)}>改写</Text>
-                  <Text className={styles.msgActionBtn} onClick={() => handleMsgAction('mark', msg)}>标记重点</Text>
+                  <Text
+                    className={classnames(styles.msgActionBtn, rewritingId === msg.id && styles.msgActionBtnActive)}
+                    onClick={() => handleMsgAction('rewrite', msg)}
+                  >
+                    {rewritingId === msg.id ? '生成中...' : '改写'}
+                  </Text>
+                  <Text
+                    className={classnames(styles.msgActionBtn, msg.marked && styles.msgActionBtnActive)}
+                    onClick={() => handleMsgAction('mark', msg)}
+                  >
+                    {msg.marked ? '取消标记' : '标记重点'}
+                  </Text>
                 </View>
               )}
             </View>
@@ -153,7 +299,7 @@ const ChatPage: React.FC = () => {
             <View
               key={t}
               className={classnames(styles.toneBtn, tone === t && styles.toneBtnActive)}
-              onClick={() => setTone(t)}
+              onClick={() => { setTone(t); console.log('[ChatPage] Tone changed to:', t) }}
               style={{ display: 'inline-flex', verticalAlign: 'top', whiteSpace: 'normal' }}
             >
               <Text>{toneLabelMap[t]}</Text>

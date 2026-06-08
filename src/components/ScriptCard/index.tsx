@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { View, Text } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import classnames from 'classnames'
@@ -14,6 +14,10 @@ interface ScriptCardProps {
 const ScriptCard: React.FC<ScriptCardProps> = ({ script, onFavorite }) => {
   const [isFav, setIsFav] = useState(script.isFavorite)
   const [expanded, setExpanded] = useState(false)
+
+  useEffect(() => {
+    setIsFav(script.isFavorite)
+  }, [script.isFavorite])
 
   const handleCopy = (e: React.MouseEvent) => {
     e.stopPropagation()

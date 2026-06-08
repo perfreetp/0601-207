@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react'
 import { View, Text, Image, Input, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import classnames from 'classnames'
-import { mockProducts } from '@/data/product'
+import { useProductStore } from '@/store/product'
 import { stockLabelMap, stockColorMap, type Product } from '@/types/product'
 import styles from './index.module.scss'
 
@@ -11,21 +11,38 @@ const categories = ['全部', '客厅家具', '卧室家具', '餐厅家具', '�
 const ProductPage: React.FC = () => {
   const [searchText, setSearchText] = useState('')
   const [activeCategory, setActiveCategory] = useState('全部')
+  const products = useProductStore(s => s.products)
 
   const filteredProducts = useMemo(() => {
-    return mockProducts.filter(p => {
+    return products.filter(p => {
       const matchCategory = activeCategory === '全部' || p.category === activeCategory
       const matchSearch = !searchText || p.name.includes(searchText) || p.category.includes(searchText)
       return matchCategory && matchSearch
     })
-  }, [searchText, activeCategory])
+  }, [products, searchText, activeCategory])
+
+  const handleAdd = () => {
+    console.log('[ProductPage] Navigate to add product form')
+    Taro.navigateTo({ url: '/pages/product-form/index' })
+  }
+
+  const handleEdit = (e: React.MouseEvent, product: Product) => {
+    e.stopPropagation()
+    console.log('[ProductPage] Edit product:', product.id)
+    Taro.navigateTo({ url: `/pages/product-form/index?id=${product.id}` })
+  }
 
   const handleGenerateScript = (product: Product) => {
+    if (product.stock === 0) {
+      Taro.showToast({ title: '该商品已售罄，建议推荐预售', icon: 'none' })
+      return
+    }
     console.log('[ProductPage] Generate script for product:', product.id)
+    const context = `${product.name}，售价¥${product.price}，卖点：${product.sellingPoints.slice(0, 2).join('、')}`
     Taro.showToast({ title: '正在生成产品话术...', icon: 'none' })
     setTimeout(() => {
-      Taro.navigateTo({ url: '/pages/script/index' })
-    }, 800)
+      Taro.switchTab({ url: '/pages/script/index' })
+    }, 600)
   }
 
   const handleViewMatch = (product: Product) => {
@@ -34,8 +51,8 @@ const ProductPage: React.FC = () => {
   }
 
   React.useEffect(() => {
-    console.log('[ProductPage] Loaded, products:', mockProducts.length)
-  }, [])
+    console.log('[ProductPage] Loaded, products:', products.length)
+  }, [products.length])
 
   return (
     <View className={styles.pageContainer}>
@@ -78,6 +95,9 @@ const ProductPage: React.FC = () => {
         {filteredProducts.length > 0 ? (
           filteredProducts.map(p => (
             <View key={p.id} className={styles.productCard}>
+              <View className={styles.editBtn} onClick={(e) => handleEdit(e, p)}>
+                <Text>✎</Text>
+              </View>
               <View className={styles.productHeader}>
                 <Image className={styles.productImage} src={p.image} mode="aspectFill" />
                 <View className={styles.productInfo}>
@@ -130,10 +150,10 @@ const ProductPage: React.FC = () => {
                   <Text>查看搭配</Text>
                 </View>
                 <View
-                  className={classnames(styles.footerBtn, styles.footerBtnPrimary)}
+                  className={classnames(styles.footerBtn, p.stock === 0 ? styles.footerBtnDisabled : styles.footerBtnPrimary)}
                   onClick={() => handleGenerateScript(p)}
                 >
-                  <Text>生成话术</Text>
+                  <Text>{p.stock === 0 ? '已售罄' : '生成话术'}</Text>
                 </View>
               </View>
             </View>
@@ -144,6 +164,10 @@ const ProductPage: React.FC = () => {
             <Text className={styles.emptyText}>暂无相关商品</Text>
           </View>
         )}
+      </View>
+
+      <View className={styles.addBtn} onClick={handleAdd}>
+        <Text className={styles.addBtnText}>+</Text>
       </View>
     </View>
   )

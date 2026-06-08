@@ -4,7 +4,8 @@ import Taro from '@tarojs/taro'
 import classnames from 'classnames'
 import PageHeader from '@/components/PageHeader'
 import ScriptCard from '@/components/ScriptCard'
-import { mockScripts } from '@/data/script'
+import { useScriptStore } from '@/store/script'
+import { useFavoriteStore } from '@/store/favorite'
 import { sceneLabelMap, sceneDescMap, type ScriptScene } from '@/types/script'
 import styles from './index.module.scss'
 
@@ -14,26 +15,34 @@ const ScriptPage: React.FC = () => {
   const [activeScene, setActiveScene] = useState<ScriptScene>('opening')
   const [context, setContext] = useState('')
   const [loading, setLoading] = useState(false)
+  const scripts = useScriptStore(s => s.scripts)
+  const generateScripts = useScriptStore(s => s.generateScripts)
+  const toggleFavorite = useScriptStore(s => s.toggleFavorite)
+  const refreshFavorites = useFavoriteStore(s => s.refreshFromScripts)
 
   const filteredScripts = useMemo(() => {
-    return mockScripts.filter(s => s.scene === activeScene)
-  }, [activeScene])
+    return scripts.filter(s => s.scene === activeScene)
+  }, [scripts, activeScene])
 
   const handleGenerate = () => {
-    console.log('[ScriptPage] Generate script with context:', context)
+    console.log('[ScriptPage] Generate script with context:', context, 'scene:', activeScene)
     if (!context.trim()) {
       Taro.showToast({ title: '请输入客户或产品信息', icon: 'none' })
       return
     }
     setLoading(true)
     setTimeout(() => {
+      const generated = generateScripts(activeScene, context.trim())
       setLoading(false)
-      Taro.showToast({ title: '已生成新话术', icon: 'success' })
-    }, 1500)
+      Taro.showToast({ title: `已生成${generated.length}版话术`, icon: 'success' })
+      setContext('')
+    }, 1000)
   }
 
   const handleFavorite = (id: string, isFav: boolean) => {
-    console.log('[ScriptPage] Favorite changed:', id, isFav)
+    console.log('[ScriptPage] Toggle favorite:', id, '->', !isFav)
+    toggleFavorite(id)
+    setTimeout(() => refreshFavorites(), 50)
   }
 
   return (

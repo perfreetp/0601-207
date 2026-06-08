@@ -3,7 +3,7 @@ import { View, Text, Input, ScrollView } from '@tarojs/components'
 import Taro from '@tarojs/taro'
 import PageHeader from '@/components/PageHeader'
 import CustomerCard from '@/components/CustomerCard'
-import { mockCustomers } from '@/data/customer'
+import { useCustomerStore } from '@/store/customer'
 import { stageLabelMap, type PurchaseStage } from '@/types/customer'
 import styles from './index.module.scss'
 import classnames from 'classnames'
@@ -13,18 +13,19 @@ const stages: (PurchaseStage | 'all')[] = ['all', 'awareness', 'interest', 'comp
 const CustomerPage: React.FC = () => {
   const [searchText, setSearchText] = useState('')
   const [activeStage, setActiveStage] = useState<PurchaseStage | 'all'>('all')
+  const customers = useCustomerStore(s => s.customers)
 
   const filteredCustomers = useMemo(() => {
-    return mockCustomers.filter(c => {
+    return customers.filter(c => {
       const matchStage = activeStage === 'all' || c.stage === activeStage
       const matchSearch = !searchText || c.name.includes(searchText) || c.phone.includes(searchText)
       return matchStage && matchSearch
     })
-  }, [searchText, activeStage])
+  }, [customers, searchText, activeStage])
 
   const handleAdd = () => {
-    Taro.showToast({ title: '新增客户', icon: 'none' })
-    console.log('[CustomerPage] Add new customer')
+    console.log('[CustomerPage] Navigate to add customer form')
+    Taro.navigateTo({ url: '/pages/customer-form/index' })
   }
 
   const handleRefresh = () => {
@@ -36,14 +37,14 @@ const CustomerPage: React.FC = () => {
   }
 
   React.useEffect(() => {
-    console.log('[CustomerPage] Page loaded, customers count:', mockCustomers.length)
-  }, [])
+    console.log('[CustomerPage] Page loaded, customers count:', customers.length)
+  }, [customers.length])
 
   return (
     <View className={styles.pageContainer}>
       <PageHeader
         title="客户管理"
-        subtitle={`共 ${mockCustomers.length} 位客户`}
+        subtitle={`共 ${customers.length} 位客户`}
         gradient
         right={
           <View
