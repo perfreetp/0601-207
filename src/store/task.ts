@@ -88,6 +88,13 @@ export const useTaskStore = create<TaskState>((set, get) => {
 })
 
 export const createFollowUpTask = (customerId: string, customerName: string, dueDate: string, desc?: string) => {
+  const exists = useTaskStore.getState().tasks.some(t =>
+    t.customerId === customerId && t.type === 'followup' && t.status !== 'done' && t.dueTime.startsWith(dueDate)
+  )
+  if (exists) {
+    console.log('[TaskStore] FollowUp task already exists, skip:', customerId, dueDate)
+    return null
+  }
   return useTaskStore.getState().addTask({
     type: 'followup',
     title: `回访${customerName}`,
@@ -101,6 +108,13 @@ export const createFollowUpTask = (customerId: string, customerName: string, due
 
 export const createMaterialTask = (customerId: string, customerName: string, material: string, dueDate?: string) => {
   const date = dueDate || new Date(Date.now() + 3 * 86400000).toISOString().split('T')[0]
+  const exists = useTaskStore.getState().tasks.some(t =>
+    t.customerId === customerId && t.type === 'material' && t.status !== 'done' && t.title.includes(material)
+  )
+  if (exists) {
+    console.log('[TaskStore] Material task already exists, skip:', customerId, material)
+    return null
+  }
   return useTaskStore.getState().addTask({
     type: 'material',
     title: `为${customerName}准备「${material}」`,
@@ -114,6 +128,13 @@ export const createMaterialTask = (customerId: string, customerName: string, mat
 
 export const createDealTask = (customerId: string, customerName: string, desc?: string, dueDate?: string) => {
   const date = dueDate || new Date(Date.now() + 2 * 86400000).toISOString().split('T')[0]
+  const exists = useTaskStore.getState().tasks.some(t =>
+    t.customerId === customerId && t.type === 'deal' && t.status !== 'done'
+  )
+  if (exists) {
+    console.log('[TaskStore] Deal task already exists, skip:', customerId)
+    return null
+  }
   return useTaskStore.getState().addTask({
     type: 'deal',
     title: `促成${customerName}成交`,

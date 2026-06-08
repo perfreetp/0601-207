@@ -73,8 +73,8 @@ const CustomerDetail = () => {
   const handleSetFollowUp = () => {
     const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0]
     updateNextFollowUp(customer.id, tomorrow)
-    createFollowUpTask(customer.id, customer.name, tomorrow, '回访跟进最新意向')
-    Taro.showToast({ title: `已设置明天回访`, icon: 'success' })
+    const task = createFollowUpTask(customer.id, customer.name, tomorrow, '回访跟进最新意向')
+    Taro.showToast({ title: task ? `已设置明天回访` : '该回访任务已存在', icon: task ? 'success' : 'none' })
   }
 
   const handleSaveMaterial = () => {
@@ -83,15 +83,26 @@ const CustomerDetail = () => {
       return
     }
     updatePendingMaterial(customer.id, newMaterial.trim())
-    createMaterialTask(customer.id, customer.name, newMaterial.trim())
+    const task = createMaterialTask(customer.id, customer.name, newMaterial.trim())
     setNewMaterial('')
     setShowMaterialForm(false)
-    Taro.showToast({ title: '资料待办已创建', icon: 'success' })
+    Taro.showToast({ title: task ? '资料待办已创建' : '该资料任务已存在', icon: task ? 'success' : 'none' })
   }
 
   const handleCreateDealTask = () => {
-    createDealTask(customer.id, customer.name, '重点跟进，争取成交')
-    Taro.showToast({ title: '成交任务已创建', icon: 'success' })
+    const task = createDealTask(customer.id, customer.name, '重点跟进，争取成交')
+    Taro.showToast({ title: task ? '成交任务已创建' : '成交任务已存在', icon: task ? 'success' : 'none' })
+  }
+
+  const handleIntentChange = (intent: 'low' | 'medium' | 'high') => {
+    updateIntent(customer.id, intent)
+    if (intent === 'high') {
+      const task = createDealTask(customer.id, customer.name, '高意向客户，重点跟进促成')
+      if (task) Taro.showToast({ title: '已设为高意向，自动生成成交任务', icon: 'success' })
+      else Taro.showToast({ title: '已设为高意向', icon: 'success' })
+    } else {
+      Taro.showToast({ title: `已更新意向为${intentLabelMap[intent]}`, icon: 'success' })
+    }
   }
 
   const gotoRecommend = () => {
@@ -212,20 +223,20 @@ const CustomerDetail = () => {
           <Text className={styles.dateValue}>{customer.nextFollowUp || '未安排'}</Text>
         </View>
         <View className={styles.dateRow}>
-          <Text className={styles.dateLabel}>成交意向</Text>
-          <View className={styles.stagePicker}>
-            {(['low', 'medium', 'high'] as const).map(i => (
-              <View
-                key={i}
-                className={`${styles.stageChip} ${customer.dealIntent === i ? styles.stageChipActive : ''}`}
-                onClick={() => updateIntent(customer.id, i)}
-                style={{ padding: '8rpx 20rpx', fontSize: '24rpx' }}
-              >
-                {intentLabelMap[i]}
-              </View>
-            ))}
+            <Text className={styles.dateLabel}>成交意向</Text>
+            <View className={styles.stagePicker}>
+              {(['low', 'medium', 'high'] as const).map(i => (
+                <View
+                  key={i}
+                  className={`${styles.stageChip} ${customer.dealIntent === i ? styles.stageChipActive : ''}`}
+                  onClick={() => handleIntentChange(i)}
+                  style={{ padding: '8rpx 20rpx', fontSize: '24rpx' }}
+                >
+                  {intentLabelMap[i]}
+                </View>
+              ))}
+            </View>
           </View>
-        </View>
         <View className={styles.dateRow}>
           <Text className={styles.dateLabel}>待补资料</Text>
           {showMaterialForm ? (

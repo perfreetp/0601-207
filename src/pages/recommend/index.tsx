@@ -145,9 +145,9 @@ const RecommendPage = () => {
                       ⭐ 匹配客户偏好：{p.sellingPoints.filter(sp => customer.preferences.some(pref => sp.includes(pref) || pref.includes(sp))).slice(0, 2).join('、')}
                     </View>
                   )}
-                  {p.pairingSuggestions?.length > 0 && (
+                  {p.matchSuggestions?.length > 0 && (
                     <View className={styles.rMatch} style={{ background: 'rgba(16, 185, 129, 0.08)', color: '#047857' }}>
-                      🤝 搭配建议：{p.pairingSuggestions.slice(0, 2).join(' + ')}
+                      🤝 搭配建议：{p.matchSuggestions.slice(0, 2).join(' + ')}
                     </View>
                   )}
                 </View>

@@ -23,3 +23,7 @@ export const stockColorMap: Record<Product['stockStatus'], string> = {
   low: '#f59e0b',
   out: '#ef4444'
 }
+
+export const stockStatusLabelMap = stockLabelMap
+export const stockStatusColorMap = stockColorMap
+export type pairingSuggestions = Product['matchSuggestions']
