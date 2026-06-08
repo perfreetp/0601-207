@@ -1,0 +1,49 @@
+@use '@/styles/variables.scss' as *;
+
+.header {
+  padding: $spacing-xl $page-padding $spacing-lg;
+  background-color: $color-bg-card;
+}
+
+.headerGradient {
+  padding: $spacing-xl $page-padding 48rpx;
+  background: $gradient-primary;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.titleWrap {
+  flex: 1;
+}
+
+.title {
+  display: block;
+  font-size: $font-size-xxl;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  line-height: 1.3;
+}
+
+.headerGradient .title {
+  color: $color-text-white;
+}
+
+.subtitle {
+  display: block;
+  margin-top: $spacing-xs;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.headerGradient .subtitle {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.right {
+  flex-shrink: 0;
+  margin-left: $spacing-md;
+}

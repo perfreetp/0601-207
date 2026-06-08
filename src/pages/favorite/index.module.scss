@@ -1,0 +1,97 @@
+@use '@/styles/variables.scss' as *;
+
+.pageContainer {
+  min-height: 100vh;
+  background: $color-bg-page;
+  padding-bottom: $spacing-xl;
+}
+
+.filterBar {
+  display: flex;
+  gap: $spacing-sm;
+  padding: $spacing-md $page-padding;
+  background: $color-bg-card;
+  @include scroll-x-container;
+  border-bottom: 1rpx solid $color-divider;
+}
+
+.filterItem {
+  @include scroll-x-item(auto);
+  display: inline-flex;
+  align-items: center;
+  height: 60rpx;
+  padding: 0 $spacing-lg;
+  border-radius: $radius-button;
+  background: $color-bg-page;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  white-space: nowrap;
+  transition: all $transition-base;
+}
+
+.filterItemActive {
+  background: rgba(37, 99, 235, 0.1);
+  color: $color-primary;
+  font-weight: $font-weight-medium;
+}
+
+.statsRow {
+  display: flex;
+  margin: $spacing-md $page-padding;
+  padding: $spacing-lg;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+  border-radius: $radius-lg;
+  gap: $spacing-xl;
+}
+
+.statsItem {
+  flex: 1;
+  text-align: center;
+}
+
+.statsValue {
+  display: block;
+  font-size: 36rpx;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+  line-height: 1.2;
+}
+
+.statsLabel {
+  display: block;
+  margin-top: 6rpx;
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
+
+.scriptList {
+  padding: 0 $page-padding;
+}
+
+.emptyState {
+  padding: 160rpx $page-padding;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.emptyIcon {
+  font-size: 120rpx;
+  margin-bottom: $spacing-md;
+}
+
+.emptyText {
+  font-size: $font-size-md;
+  color: $color-text-tertiary;
+  text-align: center;
+  margin-bottom: $spacing-md;
+  line-height: 1.6;
+}
+
+.emptyTip {
+  font-size: $font-size-sm;
+  color: $color-primary;
+  padding: $spacing-sm $spacing-lg;
+  background: $color-bg-soft;
+  border-radius: $radius-button;
+}

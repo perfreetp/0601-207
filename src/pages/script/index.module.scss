@@ -1,0 +1,151 @@
+@use '@/styles/variables.scss' as *;
+
+.pageContainer {
+  min-height: 100vh;
+  background: $color-bg-page;
+}
+
+.generateCard {
+  margin: $spacing-md $page-padding;
+  background: $gradient-ai;
+  border-radius: $radius-xl;
+  padding: $spacing-xl;
+  color: $color-text-white;
+  box-shadow: 0 8rpx 32rpx rgba(99, 102, 241, 0.3);
+}
+
+.generateTitle {
+  display: block;
+  font-size: $font-size-xl;
+  font-weight: $font-weight-semibold;
+  margin-bottom: $spacing-sm;
+}
+
+.generateDesc {
+  display: block;
+  font-size: $font-size-sm;
+  opacity: 0.9;
+  margin-bottom: $spacing-lg;
+}
+
+.generateForm {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.formRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: $radius-lg;
+  padding: $spacing-md;
+}
+
+.formLabel {
+  font-size: $font-size-sm;
+  opacity: 0.9;
+  flex-shrink: 0;
+  width: 80rpx;
+}
+
+.formInput {
+  flex: 1;
+  font-size: $font-size-md;
+  color: $color-text-white;
+}
+
+.generateBtn {
+  @include button-reset;
+  height: $button-height-lg;
+  border-radius: $radius-button;
+  background: $color-text-white;
+  margin-top: $spacing-sm;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.98);
+    opacity: 0.95;
+  }
+}
+
+.generateBtnText {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  background: $gradient-ai;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.tabs {
+  display: flex;
+  gap: $spacing-sm;
+  padding: $spacing-md $page-padding;
+  background: $color-bg-card;
+  @include scroll-x-container;
+  border-bottom: 1rpx solid $color-divider;
+}
+
+.tabItem {
+  @include scroll-x-item(auto);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-lg;
+  transition: all $transition-base;
+  white-space: nowrap;
+  min-width: 140rpx;
+}
+
+.tabItemActive {
+  background: rgba(37, 99, 235, 0.1);
+}
+
+.tabName {
+  font-size: $font-size-md;
+  font-weight: $font-weight-semibold;
+  color: $color-text-secondary;
+}
+
+.tabItemActive .tabName {
+  color: $color-primary;
+}
+
+.tabDesc {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+  margin-top: 4rpx;
+}
+
+.scriptList {
+  padding: $spacing-md $page-padding $spacing-xl;
+}
+
+.loading {
+  padding: 80rpx $page-padding;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loadingText {
+  margin-top: $spacing-md;
+  font-size: $font-size-sm;
+  color: $color-text-tertiary;
+}
+
+.spinner {
+  width: 64rpx;
+  height: 64rpx;
+  border: 4rpx solid $color-border;
+  border-top-color: $color-primary;
+  border-radius: $radius-round;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

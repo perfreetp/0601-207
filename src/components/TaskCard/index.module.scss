@@ -1,0 +1,115 @@
+@use '@/styles/variables.scss' as *;
+
+.card {
+  display: flex;
+  gap: $spacing-md;
+  background: $color-bg-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+  margin-bottom: $spacing-md;
+  box-shadow: $shadow-card;
+  transition: all $transition-base;
+
+  &:active {
+    transform: scale(0.99);
+    opacity: 0.95;
+  }
+}
+
+.cardDone {
+  opacity: 0.7;
+}
+
+.left {
+  padding-top: $spacing-xs;
+}
+
+.checkbox {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: $radius-sm;
+  border: 2rpx solid $color-border;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all $transition-base;
+  flex-shrink: 0;
+}
+
+.checked {
+  background: $color-success;
+  border-color: $color-success;
+}
+
+.checkMark {
+  color: $color-text-white;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $spacing-sm;
+}
+
+.topTags {
+  display: flex;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+}
+
+.title {
+  display: block;
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-text-primary;
+  line-height: 1.4;
+  margin-bottom: $spacing-xs;
+}
+
+.titleDone {
+  text-decoration: line-through;
+  color: $color-text-tertiary;
+}
+
+.description {
+  display: block;
+  font-size: $font-size-sm;
+  color: $color-text-secondary;
+  line-height: 1.5;
+  margin-bottom: $spacing-md;
+  @include text-ellipsis-multi(2);
+}
+
+.bottomRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.customer {
+  font-size: $font-size-xs;
+  color: $color-text-tertiary;
+}
+
+.dueTime {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.clockIcon {
+  font-size: $font-size-sm;
+}
+
+.dueText {
+  font-size: $font-size-xs;
+  color: $color-text-secondary;
+}
